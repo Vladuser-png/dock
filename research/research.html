@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>dock — Research</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0c0c0c;
+      --surface:      #141414;
+      --surface-2:    #191919;
+      --border:       #1e1e1e;
+      --border-2:     #262626;
+      --text:         #e0e0e0;
+      --text-2:       #888;
+      --text-3:       #3e3e3e;
+      --green:        #3dba6f;
+      --green-bg:     #0a2014;
+      --green-border: #1a4a2e;
+      --blue:         #5ca8d0;
+      --blue-bg:      #0a1820;
+      --yellow:       #c9a227;
+      --yellow-bg:    #1a1200;
+      --yellow-border:#3a2e00;
+      --red:          #d05050;
+      --red-bg:       #150808;
+      --red-border:   #3a1818;
+      --orange:       #d07830;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(12,12,12,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 64px;
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 48px;
+    }
+    .nav-brand {
+      font-size: 12px;
+      font-family: 'SF Mono','Fira Mono',monospace;
+      color: var(--text-3);
+      letter-spacing: .08em;
+      margin-right: 28px;
+      white-space: nowrap;
+    }
+    nav a {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 14px;
+      font-size: 12px;
+      color: var(--text-3);
+      text-decoration: none;
+      letter-spacing: .04em;
+      transition: color .15s;
+      white-space: nowrap;
+    }
+    nav a:hover { color: var(--text-2); }
+
+    /* ── HEADER ── */
+    header {
+      padding: 60px 64px 44px;
+      border-bottom: 1px solid var(--border);
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-family: 'SF Mono',monospace;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 14px;
+    }
+    header h1 {
+      font-size: 34px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -.025em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    header .meta { font-size: 13px; color: var(--text-3); }
+
+    /* ── MAIN ── */
+    main { padding: 0 64px; max-width: 1300px; }
+
+    section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-size: 10px;
+      font-family: 'SF Mono',monospace;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 8px;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #fff;
+      letter-spacing: -.015em;
+      margin-bottom: 32px;
+    }
+    h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+
+    .sublabel {
+      font-size: 10px;
+      font-family: 'SF Mono',monospace;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin: 28px 0 12px;
+    }
+
+    /* ── BADGES ── */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      font-family: 'SF Mono',monospace;
+    }
+    .b-ok   { background: var(--green-bg); color: var(--green);  border: 1px solid var(--green-border); }
+    .b-warn { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .b-fail { background: var(--red-bg);   color: var(--red);    border: 1px solid var(--red-border); }
+
+    /* ── SCREENS ── */
+    .screens-group { margin-bottom: 28px; }
+    .screens-group:last-child { margin-bottom: 0; }
+    .group-label {
+      font-size: 10px;
+      font-family: 'SF Mono',monospace;
+      color: var(--text-3);
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .screens-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 10px;
+    }
+    .screen-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: border-color .15s;
+    }
+    .screen-card:hover { border-color: var(--border-2); }
+    .screen-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      object-position: top;
+      display: block;
+      background: var(--surface-2);
+    }
+    .screen-card.sc-warn img { filter: saturate(.25) opacity(.55); }
+    .screen-card.sc-fail img { filter: saturate(0) opacity(.3); }
+    .screen-meta {
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .screen-name { font-size: 11px; font-family: 'SF Mono',monospace; color: var(--text-2); }
+
+    /* ── TABLE ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th {
+      text-align: left;
+      padding: 10px 16px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-2);
+      white-space: nowrap;
+    }
+    tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-2);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: var(--surface); }
+    tbody td:first-child {
+      color: var(--text-3);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    td strong { color: var(--text); }
+
+    /* ── SCORE CELLS ── */
+    .sc {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'SF Mono',monospace;
+    }
+    .sc5 { background: #0a2014; color: #3dba6f; }
+    .sc4 { background: #0a1820; color: #5ca8d0; }
+    .sc3 { background: #1a1200; color: #c9a227; }
+    .sc2 { background: #1a1000; color: #d07830; }
+    .sc1 { background: #150808; color: #d05050; }
+    .scnd { color: var(--text-3); font-size: 11px; font-family: 'SF Mono',monospace; }
+    .sctotal { font-size: 13px; font-weight: 700; font-family: 'SF Mono',monospace; color: var(--text); }
+
+    /* ── CARDS ── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .cards-4 { grid-template-columns: repeat(4, 1fr); }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .card-num {
+      font-size: 10px;
+      font-family: 'SF Mono',monospace;
+      color: var(--text-3);
+      letter-spacing: .06em;
+      margin-bottom: 10px;
+    }
+    .card h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+    .card p  { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+    .card p + p { margin-top: 6px; }
+
+    .tag {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .t-best { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+    .t-warn { background: var(--yellow-bg); color: var(--yellow); border: 1px solid var(--yellow-border); }
+    .t-skip { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+
+    /* ── WARN CARD ── */
+    .warn-card {
+      background: #110707;
+      border: 1px solid var(--red-border);
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .warn-card .card-num { color: #553333; }
+    .warn-card h3 { color: var(--red); font-size: 15px; margin-bottom: 8px; }
+    .warn-card p  { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+    .warn-card p + p { margin-top: 8px; }
+
+    /* ── INSIGHTS ── */
+    .insights { display: flex; flex-direction: column; gap: 10px; }
+    .insight {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 20px;
+      font-size: 13.5px;
+      color: var(--text-2);
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .insight-arrow { color: var(--text-3); flex-shrink: 0; }
+    .insight strong { color: #fff; }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 960px) {
+      nav, header, main { padding-left: 24px; padding-right: 24px; }
+      .cards, .cards-4 { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      .cards, .cards-4 { grid-template-columns: 1fr; }
+      header h1 { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand">dock / research</span>
+  <a href="#screenshots">Скріни</a>
+  <a href="#comparison">Порівняння</a>
+  <a href="#trust">Довіра</a>
+  <a href="#patterns">Патерни</a>
+  <a href="#insights">Висновки</a>
+</nav>
+
+<!-- HEADER -->
+<header>
+  <div class="eyebrow">dock · competitive research</div>
+  <h1>Аналіз конкурентів</h1>
+  <div class="meta">2026-06-13 &nbsp;·&nbsp; Web fetch + Playwright 1440×900 &nbsp;·&nbsp; 105 AI-агентів верифікації</div>
+</header>
+
+<main>
+
+  <!-- ── SCREENSHOTS ── -->
+  <section id="screenshots">
+    <div class="section-label">01</div>
+    <h2>Скріни</h2>
+
+    <div class="screens-group">
+      <div class="group-label">Doc.ua</div>
+      <div class="screens-grid">
+        <div class="screen-card sc-ok">
+          <img src="screens/doc-ua-home.png" alt="Doc.ua home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">doc-ua-home</span>
+            <span class="badge b-ok">✓ OK</span>
+          </div>
+        </div>
+        <div class="screen-card sc-ok">
+          <img src="screens/doc-ua-doctor-card.png" alt="Doc.ua doctor card" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">doc-ua-doctor-card</span>
+            <span class="badge b-ok">✓ OK</span>
+          </div>
+        </div>
+        <div class="screen-card sc-warn">
+          <img src="screens/doc-ua-search.png" alt="Doc.ua search" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">doc-ua-search</span>
+            <span class="badge b-warn">⚠ 404</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screens-group">
+      <div class="group-label">Helsi.me</div>
+      <div class="screens-grid">
+        <div class="screen-card sc-warn">
+          <img src="screens/helsi-home.png" alt="Helsi home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">helsi-home</span>
+            <span class="badge b-warn">⚠ GDPR overlay</span>
+          </div>
+        </div>
+        <div class="screen-card sc-warn">
+          <img src="screens/helsi-patients.png" alt="Helsi patients" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">helsi-patients</span>
+            <span class="badge b-warn">⚠ 404</span>
+          </div>
+        </div>
+        <div class="screen-card sc-warn">
+          <img src="screens/helsi-doctors.png" alt="Helsi doctors" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">helsi-doctors</span>
+            <span class="badge b-warn">⚠ 404</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screens-group">
+      <div class="group-label">Zocdoc · Doctolib</div>
+      <div class="screens-grid">
+        <div class="screen-card sc-ok">
+          <img src="screens/doctolib-home.png" alt="Doctolib home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">doctolib-home</span>
+            <span class="badge b-ok">✓ OK</span>
+          </div>
+        </div>
+        <div class="screen-card sc-fail">
+          <img src="screens/zocdoc-home.png" alt="Zocdoc home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">zocdoc-home</span>
+            <span class="badge b-fail">✗ Bot block</span>
+          </div>
+        </div>
+        <div class="screen-card sc-fail">
+          <img src="screens/zocdoc-app-store.png" alt="Zocdoc App Store" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">zocdoc-app-store</span>
+            <span class="badge b-fail">✗ 404</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="screens-group">
+      <div class="group-label">Zdravo.ua · MedMe</div>
+      <div class="screens-grid">
+        <div class="screen-card sc-fail">
+          <img src="screens/zdravo-home.png" alt="Zdravo home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">zdravo-home</span>
+            <span class="badge b-fail">✗ SSL error</span>
+          </div>
+        </div>
+        <div class="screen-card sc-fail">
+          <img src="screens/medme-home.png" alt="MedMe home" loading="lazy">
+          <div class="screen-meta">
+            <span class="screen-name">medme-home</span>
+            <span class="badge b-fail">✗ Offline</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COMPARISON ── -->
+  <section id="comparison">
+    <div class="section-label">02</div>
+    <h2>Порівняльна таблиця</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Вісь</th>
+            <th>Doc.ua</th>
+            <th>Helsi.me</th>
+            <th>MedMe</th>
+            <th>Zdravo.ua</th>
+            <th>Zocdoc</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Аудиторія</td>
+            <td>Пацієнти + клініки + лаб. + аптеки; вся Україна (40+ міст)</td>
+            <td>Пацієнти + лікарі; державні клініки UA</td>
+            <td>Пацієнти; акцент на аптеках і е-рецептах</td>
+            <td>Пацієнти Київ + великі міста</td>
+            <td>Пацієнти + лікарі; США</td>
+          </tr>
+          <tr>
+            <td>Основа продукту</td>
+            <td>Агрегатор: лікарі, клініки, аптеки, лаборат.</td>
+            <td>Державна е-медична система ЕСОЗ — офіційна платформа МОЗ</td>
+            <td>Мобільний застосунок: аптеки + запис + е-рецепти</td>
+            <td>Каталог клінік + запис онлайн</td>
+            <td>Маркетплейс лікарів з real-time слотами</td>
+          </tr>
+          <tr>
+            <td>Ключовий механізм</td>
+            <td>Пошук → картка лікаря → вибір часу → підтвердження</td>
+            <td>Реєстр МОЗ → запис через ЕСОЗ → електронна карта</td>
+            <td>Запис + замовлення ліків в одному потоці; е-рецепт</td>
+            <td>Пошук клініки → запис → телефонне підтвердження</td>
+            <td>Страховка → лікар → слот → миттєве підтвердження</td>
+          </tr>
+          <tr>
+            <td>Довіра</td>
+            <td><strong>6 900+ лікарів</strong>, 1.2 млн відвід./міс, верифіковані профілі</td>
+            <td>Державна верифікація — лікар = реєстр МОЗ</td>
+            <td>Партнерство з аптечними мережами</td>
+            <td>Рейтинги клінік, відгуки користувачів</td>
+            <td>Відгуки лише з підтвердженим записом; оцінка, освіта, страховка</td>
+          </tr>
+          <tr>
+            <td>Монетизація</td>
+            <td>Комісія + реклама клінік + аптека (партнерська)</td>
+            <td>Безкоштовно для пацієнтів; держфінансування</td>
+            <td>Freemium + монетизація через аптеки</td>
+            <td>Комісія з запису, реклама клінік</td>
+            <td>Підписка від лікарів ($300+/міс); пацієнти — безкоштовно</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ── TRUST DIMENSION ── -->
+  <section id="trust">
+    <div class="section-label">03</div>
+    <h2>Вимір довіри — досвідчений дипломований спеціаліст</h2>
+
+    <!-- Criteria -->
+    <div class="sublabel" style="margin-top:0">8 критеріїв · шкала 1–5</div>
+    <div class="criteria-grid cards-4">
+      <div class="card">
+        <div class="card-num">C1</div>
+        <h3>Верифікація ліцензії</h3>
+        <p>Чи перевіряє платформа ліцензію і показує це як видимий UI-сигнал — бейдж або підпис «перевірено»</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C2</div>
+        <h3>Стаж (числом)</h3>
+        <p>Роки досвіду числом прямо на профілі — без кліку у деталі</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C3</div>
+        <h3>Академічний статус</h3>
+        <p>Категорія (перша / вища), к.м.н. / д.м.н., вчене звання, посада</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C4</div>
+        <h3>Рейтинг + к-ть відгуків</h3>
+        <p>Чи показано скільки відгуків, як рейтинг пояснений пацієнту — чи довіряти числу</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C5</div>
+        <h3>Gate відгуків</h3>
+        <p>Відгук залишає лише той, хто реально побував на прийомі (gate mechanism)</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C6</div>
+        <h3>Сертифікати і спеціалізація</h3>
+        <p>Окремі сертифікати, курси, вузькі спеціальності — видно без копання у вкладки</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C7</div>
+        <h3>Лічильник прийомів</h3>
+        <p>Соціальний доказ: «5 000 прийомів через платформу» — видимо на картці</p>
+      </div>
+      <div class="card">
+        <div class="card-num">C8</div>
+        <h3>Trust на картці</h3>
+        <p>Ключові сигнали довіри видні в каталозі без відкриття повного профілю</p>
+      </div>
+    </div>
+
+    <!-- Scoring table -->
+    <div class="sublabel">Оцінки за критеріями</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Критерій</th>
+            <th>Doc.ua</th>
+            <th>Helsi.me</th>
+            <th>Zocdoc</th>
+            <th>Zdravo.ua</th>
+            <th>MedMe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C1 · Верифікація ліцензії</td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="sc sc1">1</span></td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C2 · Стаж (числом)</td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C3 · Академічний статус</td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="sc sc2">2</span></td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C4 · Рейтинг + к-ть відгуків</td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C5 · Gate відгуків</td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="sc sc2">2</span></td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C6 · Сертифікати</td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="sc sc2">2</span></td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C7 · Лічильник прийомів</td>
+            <td><span class="sc sc2">2</span></td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C8 · Trust на картці</td>
+            <td><span class="sc sc4">4</span></td>
+            <td><span class="sc sc3">3</span></td>
+            <td><span class="sc sc5">5</span></td>
+            <td><span class="scnd">н/д</span></td>
+            <td><span class="scnd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>Сума / 40</td>
+            <td><span class="sctotal">30</span></td>
+            <td><span class="sctotal">20</span></td>
+            <td><span class="sctotal">34</span></td>
+            <td><span class="scnd">—</span></td>
+            <td><span class="scnd">—</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mechanisms -->
+    <div class="sublabel">Топ-3 механізми для MVP</div>
+    <div class="cards" style="margin-bottom: 12px;">
+      <div class="card">
+        <div class="card-num">01 · DOC.UA</div>
+        <h3>Стаж числом + академічний статус</h3>
+        <p>«15 років · Вища категорія · к.м.н.» — три рядки, що зчитуються за 2 секунди. Клініка подає дані при підключенні. Найдешевший trust-сигнал.</p>
+        <span class="tag t-best">перенести в MVP</span>
+      </div>
+      <div class="card">
+        <div class="card-num">02 · ZOCDOC</div>
+        <h3>Значок «Перевірено платформою»</h3>
+        <p>Бейдж верифікованої ліцензії через реєстр МОЗ (публічний API). Прибирає сумнів «а він справжній лікар?». Технічно: 1 day. Ключовий gate для нового гравця.</p>
+        <span class="tag t-best">перенести в MVP</span>
+      </div>
+      <div class="card">
+        <div class="card-num">03 · ZOCDOC</div>
+        <h3>Gate-механізм відгуків</h3>
+        <p>Відгук = тільки якщо запис через dock + прийом підтверджено лікарем. Статус «завершений прийом» → unlock форми. Кейс Helsi 2023 доводить: без gate відгуки нічого не варті.</p>
+        <span class="tag t-best">перенести в MVP</span>
+      </div>
+    </div>
+
+    <!-- Won't work -->
+    <div class="sublabel">Що не перенесемо</div>
+    <div class="warn-card">
+      <div class="card-num">✗ НЕ ПЕРЕНОСИТИ · HELSI PLAN</div>
+      <h3>AI-синтез відгуків</h3>
+      <p>Потребує ~500–1000 відгуків на лікаря, щоб рецензія мала зміст. На MVP більшість лікарів матимуть 0–10 відгуків — AI видасть беззмістовний текст, що шкодить довірі більше, ніж допомагає.</p>
+      <p>Helsi запустив синтез до закриття проблеми фейкових записів: AI масштабує шум, а не сигнал. Без gate (C5) — AI-рецензія ненадійного = ненадійна вдвічі. Ресурс краще вкласти в C5, не в синтез.</p>
+    </div>
+  </section>
+
+  <!-- ── PATTERNS ── -->
+  <section id="patterns">
+    <div class="section-label">04</div>
+    <h2>Патерни</h2>
+
+    <div class="sublabel" style="margin-top:0">3 спільні патерни</div>
+    <div class="cards" style="margin-bottom: 28px;">
+      <div class="card">
+        <div class="card-num">P1</div>
+        <h3>Пошук — головний вхід</h3>
+        <p>Всі п'ять продуктів ставлять пошуковий рядок або фільтр-спеціальність у hero. Перший крок пацієнта — «знайти лікаря», не «дізнатись про продукт». Лендінг у конкурентів = інтерфейс, а не маркетинг.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">P2</div>
+        <h3>Довіра через числа і верифікацію</h3>
+        <p>Doc.ua: «6 900+ лікарів». Zocdoc: тільки відгуки з підтвердженим записом. Helsi: держ. реєстр МОЗ. Кожен вирішує «чи можна довіряти» по-своєму — але всі вирішують.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">P3</div>
+        <h3>Застосунок — основний канал</h3>
+        <p>Всі мають App Store / Google Play на головній або в footer. Helsi: «в додатку зручніше». Продукт = застосунок, сайт = вхідна точка. dock має виглядати як маркетинг застосунку.</p>
+      </div>
+    </div>
+
+    <div class="sublabel">3 ключові відмінності</div>
+    <div class="cards">
+      <div class="card">
+        <div class="card-num">D1</div>
+        <h3>Ринок визначає монетизацію</h3>
+        <p>Zocdoc монетизує через лікарів (підписка), Doc.ua — через комісію, Helsi — через державу. Це повністю міняє UX-пріоритети: Zocdoc оптимізує для лікаря, Doc.ua — для обсягу, Helsi — для покриття.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">D2</div>
+        <h3>Широта vs. глибина</h3>
+        <p>Doc.ua бере широтою — аптека, лаби, аналізи, хірургія. Zocdoc бере глибиною — один flow, але ідеально відточений. dock: вузько, але кращий UX.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">D3</div>
+        <h3>Держава vs. ком'юніті vs. масштаб</h3>
+        <p>Helsi довіряє через МОЗ. Zocdoc — через верифіковані відгуки. Doc.ua — через масштаб. dock не має ні держстатусу, ні масштабу → довіра будується через UX-якість і прозорість профілів.</p>
+      </div>
+    </div>
+
+    <hr>
+
+    <!-- UX Patterns -->
+    <div class="sublabel">UX-патерни «легко записатись до лікаря»</div>
+    <div class="cards cards-4" style="grid-template-columns: repeat(5,1fr); gap:10px;">
+      <div class="card">
+        <div class="card-num">P·1</div>
+        <h3>Search-First</h3>
+        <p>Велике поле пошуку в центрі. Аудиторія знає чого хоче. Ламається: каталог порожній.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">P·2</div>
+        <h3>Guided Wizard</h3>
+        <p>Питання → відповідь → результат. Підходить новачкам. Ламається: 5+ кроків = відтік.</p>
+        <span class="tag t-skip">не для dock</span>
+      </div>
+      <div class="card">
+        <div class="card-num">P·3</div>
+        <h3>Availability-First</h3>
+        <p>«Хто вільний сьогодні?» — слоти, потім лікар. Як OpenTable.</p>
+        <span class="tag t-warn">якщо є база</span>
+      </div>
+      <div class="card">
+        <div class="card-num">P·4</div>
+        <h3>Map-First</h3>
+        <p>Карта Києва з маркерами клінік. Підходить, якщо локація критична. Ламається на мобільному.</p>
+      </div>
+      <div class="card">
+        <div class="card-num">P·5</div>
+        <h3>App Showcase</h3>
+        <p>Мокап застосунку в hero, скрін змінюється при скролі. Лендінг = маркетинг, не продукт.</p>
+        <span class="tag t-best">рекомендовано</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INSIGHTS ── -->
+  <section id="insights">
+    <div class="section-label">05</div>
+    <h2>Висновки для dock</h2>
+    <div class="insights">
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Не копіюй агрегатор.</strong> Doc.ua вже є і він великий. dock виграє на якості UX і швидкості — менше кроків від відкриття до підтвердженого запису.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Лендінг ≠ застосунок.</strong> Конкуренти плутають ці два продукти: landing page у них виглядає як каталог. dock має зробити справжній маркетинговий лендінг, що продає ідею, а не функції.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Довіра — питання №1 для нового гравця.</strong> Три механізми в MVP: стаж числом + академічний статус, бейдж «перевірено МОЗ», gate відгуків (тільки підтверджені прийоми).</span>
+      </div>
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Doctolib — найближчий аспіраційний еталон.</strong> Мінімалістичний дизайн, real photo, чистий пошук, акцент на швидкості — те саме для UA-ринку.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Zocdoc = gold standard довіри до лікаря</strong> (34/40 по критеріях), але страховий шар нерелевантний для UA. Переносимо: верифікацію, gate відгуків, trust-сигнали на картці.</span>
+      </div>
+      <div class="insight">
+        <span class="insight-arrow">→</span>
+        <span><strong>Zdravo і MedMe — відсутня верифікована публічна документація.</strong> Zdravo — SSL недоступний, MedMe — offline. Можливо, платформи закриті або перебувають у ребрендингу.</span>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

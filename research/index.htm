@@ -214,9 +214,50 @@
       margin-right: 10px;
     }
 
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .score {
+      display: inline-block;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'SF Mono', monospace;
+      width: 22px;
+      text-align: center;
+    }
+    .score-5 { color: #3dba6f; }
+    .score-4 { color: #5ca8d0; }
+    .score-3 { color: #c9a227; }
+    .score-2 { color: #d07830; }
+    .score-1 { color: #d05050; }
+    .score-nd { color: #333; font-weight: 400; }
+
+    .score-total {
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'SF Mono', monospace;
+      color: #aaa;
+    }
+
+    .warn-card {
+      background: #1a1010;
+      border: 1px solid #4a1a1a;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .warn-card h3 { font-size: 14px; font-weight: 600; color: #d05050; margin-bottom: 4px; }
+    .warn-card .number { font-size: 10px; color: #553333; font-family: 'SF Mono', monospace; margin-bottom: 10px; }
+    .warn-card p { font-size: 13px; color: #888; line-height: 1.55; }
+    .warn-card p + p { margin-top: 8px; }
+
     @media (max-width: 900px) {
       header, main { padding: 32px 24px; }
       .patterns { grid-template-columns: 1fr; }
+      .criteria-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -428,6 +469,177 @@
         <span class="tag best">рекомендовано</span></p>
       </div>
 
+    </div>
+  </section>
+
+  <!-- TRUST DIMENSION -->
+  <section>
+    <h2>Вимір — Довіра до профілю лікаря · досвідчений дипломований спеціаліст</h2>
+
+    <!-- Criteria -->
+    <div class="criteria-grid">
+      <div class="pattern-card">
+        <div class="number">C1</div>
+        <h3>Верифікація ліцензії</h3>
+        <p>Чи перевіряє платформа ліцензію і показує це як видимий UI-сигнал (бейдж, підпис «перевірено»)</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C2</div>
+        <h3>Стаж роботи (числом)</h3>
+        <p>Роки досвіду числом прямо на профілі — без кліку у деталі</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C3</div>
+        <h3>Академічний статус</h3>
+        <p>Категорія (перша/вища), к.м.н./д.м.н., вчене звання, посада</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C4</div>
+        <h3>Рейтинг + к-ть відгуків</h3>
+        <p>Чи показано скільки відгуків і як пояснений рейтинг — чи довіряти числу</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C5</div>
+        <h3>Gate відгуків</h3>
+        <p>Відгук залишає тільки той, хто реально побував на прийомі (gate mechanism)</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C6</div>
+        <h3>Сертифікати та спеціалізація</h3>
+        <p>Окремі сертифікати, курси, вузькі спеціальності — видно без копання у вкладки</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C7</div>
+        <h3>Лічильник прийомів</h3>
+        <p>Соціальний доказ: «5 000 прийомів через платформу» — видимо на картці</p>
+      </div>
+      <div class="pattern-card">
+        <div class="number">C8</div>
+        <h3>Trust на картці</h3>
+        <p>Ключові сигнали довіри видні в каталозі без відкриття повного профілю</p>
+      </div>
+    </div>
+
+    <!-- Scoring table -->
+    <div class="table-wrap" style="margin-bottom: 32px;">
+      <table>
+        <thead>
+          <tr>
+            <th>Критерій</th>
+            <th>Doc.ua</th>
+            <th>Helsi.me</th>
+            <th>Zocdoc</th>
+            <th>Zdravo.ua</th>
+            <th>MedMe</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>C1 · Верифікація ліцензії</td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-1">1</span></td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C2 · Стаж (числом)</td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C3 · Академічний статус</td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-2">2</span></td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C4 · Рейтинг + к-ть відгуків</td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C5 · Gate відгуків</td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-2">2</span></td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C6 · Сертифікати</td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-2">2</span></td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C7 · Лічильник прийомів</td>
+            <td><span class="score score-2">2</span></td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>C8 · Trust на картці</td>
+            <td><span class="score score-4">4</span></td>
+            <td><span class="score score-3">3</span></td>
+            <td><span class="score score-5">5</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+            <td><span class="score score-nd">н/д</span></td>
+          </tr>
+          <tr>
+            <td>Сума / 40</td>
+            <td><span class="score-total">30</span></td>
+            <td><span class="score-total">20</span></td>
+            <td><span class="score-total">34</span></td>
+            <td><span class="score score-nd">—</span></td>
+            <td><span class="score score-nd">—</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Mechanisms to transfer -->
+    <div style="margin-bottom: 12px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Топ-3 механізми для MVP</div>
+    <div class="patterns" style="margin-bottom: 20px;">
+      <div class="pattern-card">
+        <div class="number">01</div>
+        <h3>Стаж числом + академічний статус</h3>
+        <p>«15 років · Вища категорія · к.м.н.» — три рядки, що зчитуються за 2 секунди. Клініка подає дані при підключенні, платформа не верифікує. Найдешевший trust-сигнал на MVP.</p>
+        <span class="tag best">перенести</span>
+      </div>
+      <div class="pattern-card">
+        <div class="number">02</div>
+        <h3>Значок «Перевірено платформою»</h3>
+        <p>Бейдж верифікованої ліцензії через реєстр МОЗ (публічний API). Прибирає головний сумнів «а раптом він ненастпавжній лікар». Технічно: 1 day. Психологічно: ключовий gate для нового гравця.</p>
+        <span class="tag best">перенести</span>
+      </div>
+      <div class="pattern-card">
+        <div class="number">03</div>
+        <h3>Gate-механізм відгуків</h3>
+        <p>Відгук = тільки якщо запис через dock + прийом підтверджено лікарем. Без цього — відгуки нічого не варті (кейс Helsi 2023). Статус «завершений прийом» → unlock форми відгуку.</p>
+        <span class="tag best">перенести</span>
+      </div>
+    </div>
+
+    <!-- Won't work -->
+    <div style="margin-bottom: 12px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: #555;">Що не спрацює на MVP</div>
+    <div class="warn-card">
+      <div class="number">✗ НЕ ПЕРЕНОСИТИ</div>
+      <h3>AI-синтез відгуків (Helsi Plan)</h3>
+      <p>Потребує ~500–1000 відгуків на лікаря, щоб рецензія мала зміст. На MVP перші місяці більшість лікарів матимуть 0–10 відгуків — AI видасть порожній або беззмістовний текст, що шкодить довірі.</p>
+      <p>Helsi запустив синтез до закриття проблеми фейкових записів: AI масштабує шум, а не сигнал. Без gate (C5) — AI-рецензія ненадійного = ненадійна вдвічі.</p>
     </div>
   </section>
 
